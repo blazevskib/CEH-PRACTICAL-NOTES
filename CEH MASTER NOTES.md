@@ -1,7 +1,7 @@
 # CEH MASTER NOTES
 
 ALWAYS DO SUDO SU
-
+<details>
 ## 1. SCANNING NETWORKS
 
 **Own IP**
@@ -37,7 +37,7 @@ nmap -sC -sV -p- -A -v -T4 <host>/CIDR
 
 **Host discovery**    
 netdiscover -i eth0 | netdiscover -r <host>/CIDR
-
+</details>
 ## 2. SERVICE ENUMERATION
 
 ### FTP PORT 21
