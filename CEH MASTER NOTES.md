@@ -4,19 +4,39 @@ ALWAYS DO SUDO SU
 
 ## 1. SCANNING NETWORKS
 
-| Target                                                         | Command |
-| Own IP                                                         | ip a |
-| Scanning network Live Host (ping sweep)                        | nmap -sP <host>/CIDR |
-| Scanning Live Host without port scan in same subnet (ARP Scan) | nmap -PR -sn <host>/CIDR |
-| Scripts + Version running on taget machine                     | nmap -sC -sV <host>/CIDR |
-| OS of the target machine                                       | nmap -O <host> |
-| All open ports of the target                                   | nmap -p- <host>/CIDR |
-| Specific port scan of the target                               | nmap -p (port number) <host>/CIDR |
-| Aggressive scan                                                | nmap -A <host>/CIDR |
-| Scanning using NSE scripts                                     | nmap --scripts (script name) -p (port number) <host>/CIDR |  https://nmap.org/book/man-nse.html
-                                                                 | nmap --script smb-os-discovery.nse <host> (Displays OS, Computer-Name, Domain, WorkGroup and Ports.)
-| Scripts + Version + Ports + OS Scan (overall)                  | nmap -sC -sV -p- -A -v -T4 <host>/CIDR |
-| Host discovery                                                 | netdiscover -i eth0 | netdiscover -r <host>/CIDR
+**Own IP**
+ip a | ifconfig
+
+**Scanning network Live Host (ping sweep)**  
+nmap -sP <host>/CIDR
+
+**Scanning Live Host without port scan in same subnet (ARP Scan)** 
+nmap -PR -sn <host>/CIDR
+
+**Scripts + Version running on taget machine**
+nmap -sC -sV <host>/CIDR
+
+**OS of the target machine**
+nmap -O <host>
+
+**All open ports of the target**      
+nmap -p- <host>/CIDR
+
+**Specific port scan of the target**   
+nmap -p (port number) <host>/CIDR
+
+**Aggressive scan**                            
+nmap -A <host>/CIDR
+
+**Scanning using NSE scripts** 
+nmap --scripts (script name) -p (port number) <host>/CIDR |  https://nmap.org/book/man-nse.html
+nmap --script smb-os-discovery.nse <host> (Displays OS, Computer-Name, Domain, WorkGroup and Ports.)
+
+**Scripts + Version + Ports + OS Scan (overall)**
+nmap -sC -sV -p- -A -v -T4 <host>/CIDR
+
+**Host discovery**    
+netdiscover -i eth0 | netdiscover -r <host>/CIDR
 
 ## 2. SERVICE ENUMERATION
 
