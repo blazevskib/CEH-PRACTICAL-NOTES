@@ -45,6 +45,7 @@ netdiscover -i eth0 | netdiscover -r <host>/CIDR
 	<summary>WEB & SERVICES</summary>
 	
 	</details>
+	</details>
 ## 2. SERVICE ENUMERATION
 
 ### FTP PORT 21
