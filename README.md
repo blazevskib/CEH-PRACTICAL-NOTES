@@ -4,8 +4,7 @@
 
 ## 1. SCANNING
 ### NETWORKS
-**Own IP**
-
+**Own IP** 
 ip a | ifconfig
 
 **Scanning network Live Host (ping sweep)**  
