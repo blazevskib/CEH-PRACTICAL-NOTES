@@ -1,6 +1,6 @@
 # CEH MASTER NOTES  <summary> </summary>
 
-## ALWAYS DO SUDO SU
+**ALWAYS DO SUDO SU**
 
 ## 1. SCANNING
 ### NETWORKS
