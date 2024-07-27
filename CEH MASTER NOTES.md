@@ -5,7 +5,7 @@
 <summary>1. SCANNING</summary>
 
 	<details>
-	<summary>NETWORKS</summary>
+## NETWORKS
 **Own IP**
 ip a | ifconfig
 
@@ -39,13 +39,9 @@ nmap -sC -sV -p- -A -v -T4 <host>/CIDR
 
 **Host discovery**    
 netdiscover -i eth0 | netdiscover -r <host>/CIDR
-	</details>
 	
-	<details>
-	<summary>WEB & SERVICES</summary>
-	
-	</details>
-	</details>
+## WEB & SERVICES
+
 ## 2. SERVICE ENUMERATION
 
 ### FTP PORT 21
