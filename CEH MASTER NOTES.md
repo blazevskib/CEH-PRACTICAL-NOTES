@@ -3,7 +3,7 @@
 ## ALWAYS DO SUDO SU
 
 ## 1. SCANNING
-## NETWORKS
+### NETWORKS
 **Own IP**
 ip a | ifconfig
 
