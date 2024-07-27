@@ -10,13 +10,13 @@ ip a | ifconfig
 **Scanning network Live Host (ping sweep)**  
 nmap -sP <host>/CIDR
 
-**Scanning Live Host without port scan in same subnet (ARP Scan)** 
+**Scanning Live Host without port scan in same subnet (ARP Scan)** <br>
 nmap -PR -sn <host>/CIDR
 
-**Scripts + Version running on taget machine**
+**Scripts + Version running on taget machine**<br>
 nmap -sC -sV <host>/CIDR
 
-**OS of the target machine**
+**OS of the target machine**<br>
 nmap -O <host>
 
 **All open ports of the target**      
@@ -28,51 +28,51 @@ nmap -p (port number) <host>/CIDR
 **Aggressive scan**                            
 nmap -A <host>/CIDR
 
-**Scanning using NSE scripts** 
+**Scanning using NSE scripts** <br>
 nmap --scripts (script name) -p (port number) <host>/CIDR |  https://nmap.org/book/man-nse.html
 nmap --script smb-os-discovery.nse <host> (Displays OS, Computer-Name, Domain, WorkGroup and Ports.)
 
-**Scripts + Version + Ports + OS Scan (overall)**
+**Scripts + Version + Ports + OS Scan (overall)**<br>
 nmap -sC -sV -p- -A -v -T4 <host>/CIDR
 
 **Host discovery**    
 netdiscover -i eth0 | netdiscover -r <host>/CIDR
 
-**Live machines**
-sudo fping -a -g <host>/CIDR 2>/dev/null
+**Live machines**<br>
+sudo fping -a -g <host>/CIDR 2>/dev/null<br>
 sudo nmap -sn <host>/CIDR
 
-**Domain Controler**
+**Domain Controler**<br>
 sudo nmap -p 389,445 --open -oG - <host>/CIDR | grep open
 	
 ### WEB & SERVICES
-nikto -h <host>
+nikto -h www.host.com
 
-**Banner Grabbing**
-Use ID Serv from windows
-whatweb <host>
-zaproxy for web crawling
-nmap -A <host> and look at http-server-header for load balancing
-telnet <host> <port>
-nc -v <host> <port>
-nmap -sV <host>
-echo -e "HEAD / HTTP/1.1\r\nHost: <host>\r\nConnection: close\r\n\r\n" | nc <host> 80
-curl -I http://<host>
-openssl s_client -connect <host>:<port>
+**Banner Grabbing**<br>
+Use ID Serv from windows<br>
+whatweb <host> <br>
+zaproxy for web crawling <br>
+nmap -A <host> and look at http-server-header for load balancing<br>
+telnet <host> <port><br>
+nc -v <host> <port><br>
+nmap -sV <host><br>
+echo -e "HEAD / HTTP/1.1\r\nHost: <host>\r\nConnection: close\r\n\r\n" | nc <host> 80<br>
+curl -I http://<host> <br>
+openssl s_client -connect <host>:<port><br>
 
-**Geolocation**
-dig +short certifiedhacker.com | 162.241.216.11
+**Geolocation**<br>
+dig +short certifiedhacker.com | 162.241.216.11<br>
 nmap --script ip-geolocation-geoplugin 162.241.216.11 
 
-**Zone Transfer**
-dig ns certifiedhacker.com | ns2.bluehost.com
+**Zone Transfer**<br>
+dig ns certifiedhacker.com | ns2.bluehost.com<br>
 dig axfr certifiedhacker.com @ns2.bluehost.com
 
-**FQDN**
-nmap -sC -sV <host>
-Look for DNS Computer Name
-Find FQDN
-nmap -p389 –sV -iL <host>  or nmap -p389 –sV <host> (Find the FQDN in a subnet/network)
+**FQDN**<br>
+nmap -sC -sV <host><br>
+Look for DNS Computer Name<br>
+Find FQDN<br>
+nmap -p389 –sV -iL <host>  or nmap -p389 –sV <host> (Find the FQDN in a subnet/network)<br>
 
 ## 2. SERVICE ENUMERATION
 
