@@ -29,7 +29,8 @@ nmap -p (port number) [host]/CIDR
 nmap -A [host]/CIDR
 
 **Scanning using NSE scripts** <br>
-nmap --scripts (script name) -p (port number) [host]/CIDR |  https://nmap.org/book/man-nse.html
+nmap --scripts (script name) -p (port number) [host]/CIDR <br>
+https://nmap.org/book/man-nse.html<br>
 nmap --script smb-os-discovery.nse [host] (Displays OS, Computer-Name, Domain, WorkGroup and Ports.)
 
 **Scripts + Version + Ports + OS Scan (overall)**<br>
@@ -198,11 +199,11 @@ nmap -sC -sV -A -T4 -p 445 [host]
 
 **Domains & Services**  <br>
 nmap --script smb-enum-services.nse -p445 [host]<br>
-nmap --script smb-enum-services.nse --script-args smbusername=<username>,smbpass=<password> -p445 [host] |
+nmap --script smb-enum-services.nse --script-args smbusername=<username>,smbpass=<password> -p445 [host]
 
 **Brute force SMB**     <br>
 hydra -L /usr/share/wordlist/users.txt -P /usr/share/wordlist/passwords.txt (optional -vV) [host] smb<br>
-nmap --script smb-brute -p 445 [host] |
+nmap --script smb-brute -p 445 [host]
 
 **Connect to SMB** <br>
 smbclient //[host]/<share_name) -W <domain_name> -U <Username%password>
@@ -251,10 +252,56 @@ https://github.com/ignis-sec/puff (client side vulns fuzzer)<br>
 node puff.js -w ./wordlist-examples/xss.txt -u "http://www.xssgame.com/f/m4KKGHi2rVUN/?query=FUZZ
 
 ### Port Login
+**SSH** (Secure Shell) - Port 22<br>
+ssh username@hostname <br>
 
-**FTP Login** 			| ftp [host]<br>
-**SSH Logi**n			| ssh username@[host]<br>
-**TELNET Login**		| telnet [host]
+**Telnet** - Port 23<br>
+telnet hostname<br>
+
+**FTP** (File Transfer Protocol) - Port 21<br>
+ftp hostname or lftp ftp://hostname <br>
+
+**SFTP** (Secure File Transfer Protocol) - Port 22<br>
+sftp username@hostname <br>
+
+**HTTP** (HyperText Transfer Protocol) - Port 80<br>
+curl http://hostname <br>
+
+**HTTPS** (HyperText Transfer Protocol Secure) - Port 443<br>
+curl https://hostname <br>
+
+**SMB** (Server Message Block) - Port 445<br>
+smbclient //hostname/share <br>
+
+**RDP** (Remote Desktop Protocol) - Port 3389<br>
+xfreerdp /v:hostname /u:username /p:password <br>
+
+**MySQL** - Port 3306<br>
+mysql -u username -h hostname -p<br>
+
+**PostgreSQL** - Port 5432<br>
+psql -h hostname -U username -d database <br>
+
+**VNC** (Virtual Network Computing) - Port 5900<br>
+vncviewer hostname:port <br>
+
+**Netcat** - Arbitrary Ports<br>
+nc hostname port <br>
+
+**POP3** (Post Office Protocol) - Port 110<br>
+telnet hostname 110 <br>
+
+**IMAP** (Internet Message Access Protocol) - Port 143<br>
+telnet hostname 143 <br>
+
+**LDAP** (Lightweight Directory Access Protocol) - Port 389<br>
+ldapsearch -x -H ldap://hostname -b "baseDN"<br>
+
+**SNMP** (Simple Network Management Protocol) - Port 161<br>
+snmpwalk -v2c -c community hostname<br>
+
+**SMTP** (Simple Mail Transfer Protocol) - Port 25<br>
+telnet hostname 25 or swaks --to email@example.com --server hostname <br>
 
 ## 3. System Hacking
 https://nvd.nist.gov/vuln/search
@@ -427,7 +474,7 @@ hydra -l <username> -P <wordlist> [host] http-post-form "/login:username=^USER^&
 - `hydra -l root -P passwords.txt [-t 32] [host] ftp<br>
 - `hydra -L usernames.txt -P pass.txt [host] mysql<br>
 - `hydra -l USERNAME -P /path/to/passwords.txt -f [host] pop3 -V`<br>
-- `hydra -V -f -L <userslist> -P <passwlist> ***rdp***://[host]`<br>
+- `hydra -V -f -L <userslist> -P <passwlist> rdp://[host]`<br>
 - `hydra -P common-snmp-community-strings.txt target.com snmp<br>
 - `hydra -l Administrator -P words.txt [host] smb t 1<br>
 - `hydra -l root -P passwords.txt [host] ssh<br>
@@ -523,7 +570,7 @@ OR<br>
 sqlmap -u "[host]" --cookie=”<cookie>; security=low” -D <DataBase> --tables<br>  
 
 **List Columns of that table**<br>
-sqlmap -u "[host]" --cookie=”<cookie>; security=low” -D <DataBase> -T <Table> --columns
+sqlmap -u "[host]" --cookie=”<cookie>; security=low” -D <DataBase> -T <Table>--columns
 
 **Dump all values of the table**<br>
 sqlmap -u “[host]” --cookie="<cookie>" -D <DataBase> -T <Table> --dump<br>
