@@ -1,10 +1,9 @@
 # CEH MASTER NOTES  <summary> </summary>
 
 ## ALWAYS DO SUDO SU
-<details>
+
 <summary>1. SCANNING</summary>
-  <details>
-<details>
+
 <summary>NETWORKS</summary>
 **Own IP**
 ip a | ifconfig
@@ -39,12 +38,8 @@ nmap -sC -sV -p- -A -v -T4 <host>/CIDR
 
 **Host discovery**    
 netdiscover -i eth0 | netdiscover -r <host>/CIDR
-  <details>
-  
-<details>
-<summary>WEB & SERVICES</summary>
 
-  <details>
+<summary>WEB & SERVICES</summary>
   
 ## 2. SERVICE ENUMERATION
 
