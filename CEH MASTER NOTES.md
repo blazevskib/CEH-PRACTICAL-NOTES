@@ -1,10 +1,8 @@
 # CEH MASTER NOTES  <summary> </summary>
 
-**ALWAYS DO SUDO SU**
-<details>
-<summary>1. SCANNING</summary>
+## ALWAYS DO SUDO SU
 
-	<details>
+## 1. SCANNING
 ## NETWORKS
 **Own IP**
 ip a | ifconfig
@@ -40,14 +38,11 @@ nmap -sC -sV -p- -A -v -T4 <host>/CIDR
 **Host discovery**    
 netdiscover -i eth0 | netdiscover -r <host>/CIDR
 	
-## WEB & SERVICES
+### WEB & SERVICES
 
-<details>
-<summary>2. SERVICE ENUMERATION</summary>
+## 2. SERVICE ENUMERATION
 
-	<details>
-
-**FTP PORT 21**
+### FTP PORT 21
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-ftp
 
 **Brute force FTP**                         
@@ -64,7 +59,7 @@ set pass_file /path/passwords.txt
 **Download file from FTP after login** 
 ls then get secret.txt
 
-**SSH PORT 22**
+### SSH PORT 22
 https://steflan-security.com/linux-privilege-escalation-exploiting-misconfigured-ssh-keys/
 
 **Brute force username** 
@@ -74,7 +69,7 @@ msf> use scanner/ssh/ssh_enumusers |
 **Private key brute force**    
 msf> use scanner/ssh/ssh_identify_pubkeys |
 
-**TELNET PORT 23**
+### TELNET PORT 23
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-telnet | https://www.hackingarticles.in/penetration-testing-telnet-port-23/ | https://book.hacktricks.xyz/generic-methodologies-and-resources/brute-force#telnet
 
 **Enumerate Telnet** 
@@ -82,7 +77,7 @@ nmap -n -sV -Pn --script "*telnet* and safe" -p 23 <host>
 **Brute force Telnet credentials** 
 hydra -l root -P passwords.txt [-t 32] <host> telnet 
 
-**SMTP PORT 25**
+### SMTP PORT 25
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-smtp
 
 **Initiate a TCP connection to port 25**
@@ -95,7 +90,7 @@ dig +short mx google.com
 nmap -p25 --script smtp-commands <host>
 nmap -p25 --script smtp-open-relay <host> -v
 
-**DNS PORT 53**
+### DNS PORT 53
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-dns
 
 **Enumarate DNS**  
@@ -104,7 +99,7 @@ dnsrecon -w -d <host> |  dnsrecon -d <host> -z
 **Brute forcing**  
 nmap --script dns-brute <host>
 
-NetBIOS PORT 137/138/139   
+### NetBIOS PORT 137/138/139   
 https://book.hacktricks.xyz/network-services-pentesting/137-138-139-pentesting-netbios
 
 **Enumerate NetBIOS** 
@@ -116,7 +111,7 @@ nbtstat -a <host> (-c list contents of Netbios name cache)
 **Enumerate Domain Users**	
 net use (Displays connection status, Shared folder/drive and Network Information) | net user | net user /domain | net user [username] | net user [username] /domain
 
-SNMP PORT 161
+### SNMP PORT 161
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-snmp
 
 **Enumarate SNMP**     
@@ -135,7 +130,7 @@ show options
 set RHOST <host>
 exploit
 
-**SMB PORT 445**
+### SMB PORT 445
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-smb
 
 **Enumarate Network File Shares**      
@@ -170,7 +165,7 @@ smbclient //<host>/<share_name) -W <domain_name> -U <Username%password> |
 sudo mount -t cifs //<host>/<share_name> /<local path> -o username=<username>,password=<password>
 nmap -p 445 --script-enum-users --script-args smbusername=adminitrator, smbpassword=smbserver_771 <host> |
 
-**RDP PORT 3389**
+### RDP PORT 3389
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-rdp
 
 **Use metasploit to confirm the services running is RDP**
@@ -188,9 +183,9 @@ hydra -L /usr/share/wordlist/users.txt -P /usr/share/wordlist/passwords.txt rdp:
 **Use RDP tools to connect to machine**     
 xfreerdp /u:<username> /p:<password> /v:<host>:3389
 
-**HTTP/HTTPS PORT 80/443/8080/8081**
+### HTTP/HTTPS PORT 80/443/8080/8081
 
-**Port Login**
+### Port Login
 
 **FTP Login** 			| ftp <host>
 **SSH Logi**n			| ssh username@<host>
