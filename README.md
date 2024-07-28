@@ -347,9 +347,8 @@ select_packet > follow > TCP Stream
 **To find message hidden with CovertTCP**<br>
 Apply filter tcp. Under IPv4 -> Identification follow the message.
 
-| Finding Files | 3 |
-| Finding Comments | 4 |
-| Search Strings | 5 |
+**Finding severity**<be>
+Open pcapng file and go to Analyze -> Expert Information
 
 ## 5. Steganography
 
