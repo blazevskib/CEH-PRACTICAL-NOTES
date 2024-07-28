@@ -175,7 +175,8 @@ exploit
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-ldap
 
 **Enumerate Users**<br>
-enum4linux -U -o [host]
+enum4linux -U -o [host]<br>
+ldapsearch -x -h 10.10.10.25 -p 389 -s base -b "" supportedLDAPVersion
 
 ### SMB PORT 445
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-smb
