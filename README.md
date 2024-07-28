@@ -327,8 +327,8 @@ run<br>
 ### Filtering packets 
 **Password Sniffing using Wireshark**<br>
 In pcap file apply filter: http.request.method==POST or http.request.method==get(you will get all the post or get request) <br>
-Now to capture password click on edit in menu bar, then near Find packet section, on the "display filter" select "string", also select "Packet details" <br>
-from the drop down of "Packet list", also change "narrow & wide" to "Narrow UTF-8 & ASCII", and then type "pwd" in the find section.
+Follow HTTP stream. <br>
+Type "pwd" in the find section.
 
 **To the Find DOS & DDOS**<br>
 Go to Statistics and Select Conversations , sort by packets in IPv4 based on number of Packets transfer<br>
@@ -617,7 +617,7 @@ cd sdcard<br>
 adb pull /sdcard/log.txt C:\Users\admin\Desktop\log.txt <br>
 adb pull sdcard/log.txt /home/mmurphy/Desktop
 
-### PhoeSploit
+### PhoneSploit
 **To install Phonesploit**<br>
 git clone https://github.com/aerosol-can/PhoneSploit<br>
 cd PhoneSploit<br>
