@@ -254,7 +254,7 @@ SSH key brute force attempt to a subnet using a single username and all the SSH 
 VNC brute force attempt to a single IP address using a password file with specified port number:<br>
 ./crowbar.py -b vnckey -s [host]/32 -p 5902 -k ~/.vnc/passwd<br>
 
-**Use RDP tools to connect to machine**     <br>
+**Use RDP tools to connect to machine OR RDP from WINDOWS**     <br>
 xfreerdp /u:<username> /p:<password> /v:[host]:3389
 
 ### HTTP/HTTPS PORT 80/443/8080/8081
@@ -385,12 +385,15 @@ Open pcapng file and go to Analyze -> Expert Information
 ### SNOW
 
 run cmd from SNOW folder<br>
-SNOW.EXE -C -m “<hidden text>” -p “<password>” <txt file> <output txt file><br>
+SNOW.EXE -C -m “hidden text” -p “password” input.txt output.txt<br>
 -C - compile<br>
 -m - text we want to hide<br>
 -p - password<br>
 Extracting data:<br>
-SNOW.EXE -C -p <password> <provided txt file>
+SNOW.EXE -C -p password output.txt
+
+**Steghide**<br>
+steghide extract -sf image.(JPEG or BMP Image)<br>
 
 ### Openstego<br>
 2 options to Hide or Extract data
@@ -426,7 +429,9 @@ cc -o covert_tcp covert_tcp.c (On both client and server)<br>
 Password auditing wizard
 
 **Hash Identifier**<br>
-https://www.onlinehashcrack.com/hash-identification.php
+https://www.onlinehashcrack.com/hash-identification.php<br>
+
+sha224sum <file>
 
 **Hash Crack**<br>
 https://crackstation.net/<br>
@@ -518,7 +523,12 @@ wpscan --url http://x.x.x.x:8080/CEH -u <user> -P ~/wordlists/password.txt<br>
 ## 7. Hacking WebServers & WebApps
 
 **Directory Bruteforcing**<br>
-gobuster dir -u [host] -w /home/attacker/Desktop/common.txt
+gobuster dir -u http://site-being-tested.com -w /home/attacker/Desktop/common.txt<br><br>
+gobuster dir -u https://example.com -w /wordlists/Discovery/Web-Content/big.txt -t 4 --delay 1s -o results.txt
+gobuster dir -u https://example.com -w /wordlists/Discovery/Web-Content/big.txt  -x .php, .txt  -t 4 --delay 1s -o results.txt<br>
+
+dirb http://site-being-tested.com<br>
+dirb http://site-being-tested.com /path/to/wordlist1,/path/to/wordlist2<br>
 
 **Enumerate a Web Application using WPscan & Metasploit**<br>
 wpscan --url http://[host]:[port]/NEW --enumerate u  (u means username) <br>
